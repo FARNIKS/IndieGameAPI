@@ -1,59 +1,185 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🎮 IndieDex API — Public & Open-Source Indie Games REST API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+> Una API RESTful pública y gratuita para consultar información estructurada sobre videojuegos independientes, sus personajes, estudios de desarrollo, motores gráficos y plataformas. Diseñada como una herramienta de práctica y pruebas para estudiantes y desarrolladores frontend (al estilo de PokéAPI o The Rick and Morty API).
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Características Principales
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+* **Base de Datos Normalizada (3NF):** Relaciones complejas (1:N y N:M) bien estructuradas para representar de forma realista el ecosistema indie.
+* **Formato Estandarizado:** Respuestas JSON limpias construidas con *API Resources* de Laravel.
+* **Paginación Nativa:** Respuestas paginadas por defecto (`?page=1`) que incluyen metadatos (`meta` y `links`) para facilitar la maquetación de componentes de paginación en el frontend.
+* **Filtros y Búsqueda:** Parámetros por URL para filtrar juegos por título (`?search=`), motor gráfico (`?engine=`), etc.
+* **Rendimiento Optimizado:** Consultas optimizadas con *Eager Loading* para prevenir el problema de rendimiento $N+1$.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 🗺️ Próximas Mejoras y Hoja de Ruta (Roadmap)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Este proyecto está en constante evolución. Las siguientes fases de desarrollo incluyen:
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- [ ] **Enriquecimiento y Concisión de Datos:** Refinar las descripciones de los juegos y personajes para hacerlas más técnicas, concisas y detalladas.
+- [ ] **Servidor de Recursos Multimedia (Imágenes):** Alojar y enlazar carátulas oficiales, bocetos y *sprites* de personajes en alta resolución a través de un CDN o almacenamiento público.
+- [ ] **Página Web de Documentación Integrada:** Crear una interfaz visual interactiva en la raíz del proyecto (`/`) dentro de la misma aplicación de Laravel (estilo PokéAPI), donde los usuarios puedan probar las peticiones directamente desde el navegador, ver ejemplos en tiempo real y copiar fragmentos de código en JavaScript (`fetch`/`axios`).
+- [ ] **Ampliación del Catálogo:** Expandir la base de datos para incluir más de 50 juegos indies icónicos.
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+---
 
-## Agentic Development
+## 📚 Documentación de la API (Endpoints)
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+**URL Base Local:** `http://127.0.0.1:8000/api`
 
-```bash
-composer require laravel/boost --dev
+### Resumen de Rutas
 
-php artisan boost:install
+| Método | Endpoint | Descripción | Parámetros de Consulta |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/games` | Lista paginada de videojuegos indies | `?search=`, `?engine=`, `?page=` |
+| `GET` | `/games/{id}` | Información detallada de un juego | Ninguno |
+| `GET` | `/characters` | Lista paginada de personajes | `?search=`, `?page=` |
+| `GET` | `/characters/{id}` | Detalle de un personaje y sus juegos | Ninguno |
+| `GET` | `/developers` | Lista de estudios de desarrollo | Ninguno |
+| `GET` | `/developers/{id}` | Detalle del estudio y sus juegos | Ninguno |
+| `GET` | `/engines` | Lista de motores gráficos | Ninguno |
+| `GET` | `/platforms` | Lista de plataformas soportadas | Ninguno |
+| `GET` | `/genres` | Lista de géneros de videojuegos | Ninguno |
+
+---
+
+## 💡 Ejemplos de Petición y Respuesta
+
+### 1. Obtener lista de juegos (`GET /api/games?page=1`)
+
+**Ejemplo de Respuesta JSON:**
+
+```json
+{
+  "data": [
+    {
+      "id": 1,
+      "title": "Hollow Knight",
+      "description": "Una aventura épica de acción en 2D a través de un vasto reino de insectos en ruinas...",
+      "release_date": "2017-02-24",
+      "cover_image": "https://tu-dominio.com/img/hollow-knight.jpg",
+      "developer": {
+        "id": 1,
+        "name": "Team Cherry",
+        "country": "Australia",
+        "website": "teamcherry.com.au"
+      },
+      "engine": {
+        "id": 2,
+        "name": "Unity"
+      },
+      "genres": [
+        { "id": 1, "name": "Metroidvania" },
+        { "id": 2, "name": "Acción" }
+      ],
+      "platforms": [
+        { "id": 1, "name": "PC (Windows)" },
+        { "id": 4, "name": "Nintendo Switch" }
+      ]
+    }
+  ],
+  "links": {
+    "first": "http://127.0.0.1:8000/api/games?page=1",
+    "last": "http://127.0.0.1:8000/api/games?page=1",
+    "prev": null,
+    "next": null
+  },
+  "meta": {
+    "current_page": 1,
+    "from": 1,
+    "last_page": 1,
+    "per_page": 10,
+    "to": 10,
+    "total": 10
+  }
+}
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### 2. Obtener un juego por ID con sus personajes (`GET /api/games/1`)
 
-## Contributing
+**Ejemplo de Respuesta JSON:**
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```json
+{
+  "data": {
+    "id": 1,
+    "title": "Hollow Knight",
+    "description": "Una aventura épica de acción en 2D...",
+    "release_date": "2017-02-24",
+    "cover_image": "https://tu-dominio.com/img/hollow-knight.jpg",
+    "developer": {
+      "id": 1,
+      "name": "Team Cherry"
+    },
+    "engine": {
+      "id": 2,
+      "name": "Unity"
+    },
+    "genres": [...],
+    "platforms": [...],
+    "characters": [
+      {
+        "id": 1,
+        "name": "The Knight",
+        "description": "Un ser silencioso, de pequeña estatura...",
+        "image_url": "https://tu-dominio.com/img/knight.jpg",
+        "role": "Protagonista"
+      },
+      {
+        "id": 2,
+        "name": "Hornet",
+        "description": "La protectora de las ruinas de Hallownest...",
+        "image_url": "https://tu-dominio.com/img/hornet.jpg",
+        "role": "Jefe / Aliada"
+      }
+    ]
+  }
+}
+```
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 🛠️ Instalación y Configuración Local
 
-## Security Vulnerabilities
+Si deseas clonar este proyecto y ejecutarlo en tu máquina local:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+1. **Clonar el repositorio:**
+   ```bash
+   git clone https://github.com/tu-usuario/indiedex-api.git
+   cd indiedex-api
+   ```
 
-## License
+2. **Instalar dependencias de PHP:**
+   ```bash
+   composer install
+   ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-# IndieGameAPI
+3. **Configurar el archivo de entorno:**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+4. **Configurar SQLite (o la base de datos de tu preferencia):**
+   Crea el archivo de SQLite dentro de la carpeta `database`:
+   ```bash
+   touch database/database.sqlite
+   ```
+   En tu archivo `.env`, asegúrate de tener:
+   ```env
+   DB_CONNECTION=sqlite
+   ```
+
+5. **Ejecutar migraciones y poblar la base de datos:**
+   ```bash
+   php artisan migrate:fresh --seed --seeder=IndieGamesSeeder
+   ```
+
+6. **Iniciar el servidor local:**
+   ```bash
+   php artisan serve
+   ```
+   Accede a la API en `http://127.0.0.1:8000/api/games`.
+
